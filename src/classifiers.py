@@ -82,7 +82,6 @@ class FastAnswerClassifier:
                 lem_input_text = re.sub(special_patterns, "", lem_input_text)
                 kosgu_query={"bool": {"must": [{"match_phrase": {"Topic": topic}}, 
                                             {"match": {"LemCluster": lem_input_text}}]}}
-                kosgu_query = {"match": {"LemCluster": lem_input_text}}
                 results = await self.es.search_by_query(self.prm.clusters_index, query=kosgu_query)
                 ids_tuples = [(d["_source"]["ID"], re.sub(special_patterns, "", d["_source"]["LemCluster"]), 
                                  len(d["_source"]["LemCluster"].split())) for d in results["hits"]["hits"]]
