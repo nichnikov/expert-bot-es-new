@@ -63,8 +63,8 @@ class FastAnswerClassifier:
                     logger.info("es returned empty value for input text {}".format(str(text)))
                     return {"templateId": 0, "templateText": ""}
             else:
-                    logger.info("tokenizer returned empty value for input text {}".format(str(text)))
-                    return {"templateId": 0, "templateText": ""}
+                logger.info("tokenizer returned empty value for input text {}".format(str(text)))
+                return {"templateId": 0, "templateText": ""}
         except Exception:
             logger.exception("Searching problem with text: {}".format(str(text)))
             return {"templateId": 0, "templateText": ""}
