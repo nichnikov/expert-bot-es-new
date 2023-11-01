@@ -36,4 +36,6 @@ class DeleteSample(BaseModel):
     FieldName: str
     Score: float
 
-
+class SearchResult(BaseModel):
+    templateId: int 
+    templateText: str
