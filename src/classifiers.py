@@ -2,7 +2,8 @@
 классификатор KNeighborsClassifier в /home/an/Data/Yandex.Disk/dev/03-jira-tasks/aitk115-support-questions
 """
 import re
-from src.data_types import Parameters, SearchResult
+from src.data_types import (Parameters, 
+                            SearchResult)
 from src.storage import ElasticClient
 from src.texts_processing import TextsTokenizer
 from src.utils import timeout, jaccard_similarity
