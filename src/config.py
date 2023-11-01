@@ -3,7 +3,8 @@ import json
 import logging
 import pandas as pd
 from pathlib import Path
-from src.data_types import Parameters
+from src.data_types import (Parameters, 
+                            SearchResult)
 
 
 def get_project_root() -> Path:
@@ -25,6 +26,7 @@ with open(os.path.join(PROJECT_ROOT_DIR, "data", "config.json"), "r") as jf:
     config_dict = json.load(jf)
 
 parameters = Parameters.parse_obj(config_dict)
+empty_result = SearchResult(templateId=0, templateText="").dict()
 
 stopwords = []
 if parameters.stopwords_files:

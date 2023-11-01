@@ -6,7 +6,8 @@ from src.data_types import Parameters, SearchResult
 from src.storage import ElasticClient
 from src.texts_processing import TextsTokenizer
 from src.utils import timeout, jaccard_similarity
-from src.config import logger
+from src.config import (logger, 
+                        empty_result)
 
 # https://stackoverflow.com/questions/492519/timeout-on-a-function-call
 
@@ -17,7 +18,7 @@ def search_result_rep(search_result: []):
              **{"id": d["_id"]},
              **{"score": d["_score"]}} for d in search_result]
 
-# empty_result = SearchResult(templateId=0, templateText="").dict()
+
 class FastAnswerClassifier:
     
     
@@ -25,7 +26,7 @@ class FastAnswerClassifier:
         self.es = ElasticClient()
         self.tkz = tokenizer
         self.prm = parameters
-        self.emp_res = SearchResult(templateId=0, templateText="").dict()
+
 
     async def get_answer(self, templateId, pubid):
         answer_query = {"bool": {"must": [{"match_phrase": {"templateId": templateId}}, {"match_phrase": {"pubId": pubid}},]}}
@@ -35,7 +36,7 @@ class FastAnswerClassifier:
             return SearchResult(templateId=search_result[0]["templateId"], templateText=search_result[0]["templateText"]).dict()
         else:
             logger.info("not found answer with templateId {} and pub_id {}".format(str(templateId), str(pubid)))
-            return self.emp_res
+            return empty_result
 
     async def searching(self, text: str, pubid: int, score: float):
         """"""
@@ -54,19 +55,19 @@ class FastAnswerClassifier:
                                 answer = await self.get_answer(d["ID"], pubid)
                                 return answer
                         logger.info("Jaccard Similarity of {} less then score {}".format(str(tokens_str), str(score)))
-                        return self.emp_res
+                        return empty_result
                     else:
                         logger.info("es didn't find anything for text of tokens {}".format(str(tokens_str)))
-                        return self.emp_res
+                        return empty_result
                 else:
                     logger.info("es returned empty value for input text {}".format(str(text)))
-                    return self.emp_res
+                    return empty_result
             else:
                 logger.info("tokenizer returned empty value for input text {}".format(str(text)))
-                return self.emp_res
+                return empty_result
         except Exception:
             logger.exception("Searching problem with text: {}".format(str(text)))
-            return self.emp_res
+            return empty_result
 
     async def kosgu_searching(self, input_text: str, pubid: int, topic: str, special_patterns: str):
         """
@@ -88,13 +89,17 @@ class FastAnswerClassifier:
                     serch_result = re.findall(p, lem_input_text)
                     if serch_result:
                         answer = await self.get_answer(i, pubid)
-                        return {**answer, **{"FoundPrase": p}}
-                return {**self.emp_res, **{"FoundPrase": ""}}
+                        # return {**answer, **{"FoundPrase": p}}
+                        return answer
+                # return {**empty_result, **{"FoundPrase": ""}}
+                return empty_result
             else:
-                return {**self.emp_res, **{"FoundPrase": ""}}
+                # return {**empty_result, **{"FoundPrase": ""}}
+                return empty_result
         except:
             logger.exception("Searching problem with text: {}".format(str(input_text)))
-            return {**self.emp_res, **{"FoundPrase": ""}}
+            # return {**empty_result, **{"FoundPrase": ""}}
+            return empty_result
 
     
 '''

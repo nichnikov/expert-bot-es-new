@@ -4,7 +4,7 @@ import uvicorn
 from fastapi import FastAPI
 from src.start import classifier
 from src.storage import ElasticClient
-from src.config import logger
+from src.config import logger, empty_result
 from src.data_types import (TemplateIds,
                             SearchData)
 from src.utils import timeit
@@ -36,7 +36,7 @@ async def search(data: SearchData):
         return result
     except Exception:
         logger.exception("Searching problem with text {} in pubid {}".format(str(data.text), str(data.pubid)))
-        return {"templateId": 0, "templateText": ""}
+        return empty_result
 
 
 if __name__ == "__main__":
