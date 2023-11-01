@@ -6,14 +6,11 @@ from src.data_types import (Parameters,
                             SearchResult)
 from src.storage import ElasticClient
 from src.texts_processing import TextsTokenizer
-from src.utils import timeout, jaccard_similarity
+from src.utils import jaccard_similarity
 from src.config import (logger, 
                         empty_result)
 
-# https://stackoverflow.com/questions/492519/timeout-on-a-function-call
-
-tmt = float(10)  # timeout
-
+""""""
 def search_result_rep(search_result: []):
     return [{**d["_source"],
              **{"id": d["_id"]},
